@@ -1,0 +1,298 @@
+\documentclass[12pt]{article}
+
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{biblatex} %Imports biblatex package
+    \addbibresource{bibliography.bib}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{microtype}
+\usepackage{tikz-cd}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{mathrsfs}
+% jazz up the colours yourself if you wanted!
+\hypersetup{
+    linkcolor  = blue,
+	urlcolor   = blue,
+	citecolor = red,   
+	colorlinks = true,
+}  
+
+\DeclareMathOperator{\id}{id}
+
+\renewcommand{\emptyset}{\varnothing}
+\renewcommand{\complement}{\mathsf{c}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark} % * indicates that it is un-numbered...
+
+\title{Construction of $\mathbb{R}$ Using Cauchy Sequences}
+\author{Thomas Swanick}
+\date{July 6, 2023}
+
+\begin{document}
+	
+	\maketitle
+	
+	\tableofcontents % only if you want one...
+ \section{Introduction}
+ The following paper delivers a step-by-step outline of the Cauchy sequence construction of the real numbers. While it  presents all notions involved in a mathematically rigorous manner, its main goal is to develop the reader's intuitive grasp of the topic. Many resources explicitly state all theorems and definitions needed for performing the construction without presenting the motivation for constructing the real numbers in such a way. As such, the purpose of this discourse is to highlight the intuition which allows us to understand the logical basis for this specific construction of $\mathbb{R}$.\\
+ 
+\noindent We begin by examining the idea that the real numbers are merely a \textit{completion} of $\mathbb{Q}$ and point out the reasons which cause the rational numbers to need appending. From there, we discuss an axiomatic approach to said completion and explain the deficiencies of such a method. These shortcomings are what motivate us to construct an explicit set representing the real numbers. Our first step in this construction is to understand the idea of approximating irrational numbers with rational sequences. We delve into the nuances of this technique and develop the tools needed for defining the real numbers in terms of Cauchy sequences of rational approximations. Before we can confidently conclude that our construction is indeed what we know as $\mathbb{R}$, we analyze its properties and prove it satisfies the right requirements.
+
+ \section{The Problem With $\mathbb{Q}$}
+ Up until now, we have formally defined and constructed the sets $\mathbb{N}$, $\mathbb{Z}$, and $\mathbb{Q}$. We used the natural numbers to construct the integers and then the integers to construct the rationals. As such, it is no surprise that our starting point for the construction of the reals is the rational numbers. Before we embark on that journey, let us take a closer look at the set $\mathbb{Q}$.\\\\ 
+  \noindent Given our definition of $\mathbb{Q}$ and its operations $(+,\cdot)$, we note that it satisfies several useful properties. Specifically, the rationals meet the requirements for what we call an \textit{ordered field}. A \textit{field} is nothing more than a fancy term for saying that a set conforms to the standard multiplicative and additive properties we learn in elementary school.\\
+  
+\noindent $\mathbf{Definition\ 2.1}$ (Field)\cite[pg.11]{paper}.
+        A \textit{field} is a nonempty set $\mathbb{F}$, equipped with two binary operations called addition $(+)$ and multiplication $(\cdot)$ which satisfy the following axioms.\\
+        
+        \begin{enumerate}[(i)]
+            \item \underline{Commutativity:} For all $a,b\in\mathbb{F}$, $a+b=b+a$ and $a\cdot b=b\cdot a$.
+            \item \underline{Associativity:} For all $a,b,c\in\mathbb{F}$, $(a+b)+c=a+(b+c)$ and $(a\cdot b)\cdot c=a\cdot (b\cdot c)$.
+            \item \underline{Distributivity:} For all $a,b,c\in\mathbb{F}$, $a\cdot (b+c)=a\cdot b + a\cdot c$.
+            \item \underline{Identity Elements:} There exists elements $0,1\in\mathbb{F}$ such that for all $a\in\mathbb{F}$, $a+0=a$ and $a\cdot 1=a$.
+            \item \underline{Inverse Elements:} For all $a\in\mathbb{F}$, there is an element $(-a)\in\mathbb{F}$ such that $a+(-a)=0$ and if $a\neq 0$, there is also an element $a^{-1}\in\mathbb{F}$ such that $a\cdot a^{-1}=1$.\\
+        \end{enumerate}
+        
+\noindent The operations defined on a field are functions of the type $\mathbb{F}\times\mathbb{F}\rightarrow \mathbb{F}$ and as such, closure under these operations is an implicit part of their definition.\\\\
+\noindent The interested reader can prove that the rational numbers do indeed satisfy these axioms, and one can also check that other common sets like the natural numbers $\mathbb{N}$ or the integers $\mathbb{Z}$ are non-examples of fields. For instance, among other issues, $\mathbb{N}$ fails to produce an additive inverse for any non-zero element.\\\\    
+\noindent Another key property of the rational numbers is that they have what we call an \textit{order}. Given any two nonequal elements of $\mathbb{Q}$, one is always considered larger than the other. Generally, this is taught to students through the concept of inequalities, without the basis of a rigorous definition. Let us avoid any ambiguity and formalize our notion of \textit{order}.\\\
+        
+\noindent $\mathbf{Definition\ 2.2}$ (Ordered Field)\cite[pg.3 \& 7]{old}.
+        An \textit{ordered field} is a field $\mathbb{F}$ along with a relation $<$ on $\mathbb{F}$ which satisfies the following axioms.
+	    \begin{enumerate}
+	        \item For all $x,y\in\mathbb{F}$, only one of the following is true:
+            $$x<y,\ x=y,\ y<x.$$
+	        \item For all $x,y,z\in\mathbb{F}$, if $x<y$ and $y<z$, then $x<z$.
+	        \item For all $x,y,z\in\mathbb{F}$, $x<y$ implies $x+z<y+z$.
+                \item For all $x,y\in\mathbb{F}$, if $x,y>0$, then $x\cdot y>0$.
+	    \end{enumerate}
+
+        
+\noindent Some common conventions include defining $x>y$ to mean $y<x$, $x\leq y$ to mean $x<y$ or $x=y$, and $x\geq y$ to mean $x>y$ or $x=y$.\\
+
+\noindent In the case of the rationals, we say that $\frac{a}{b}<\frac{c}{d}$ if and only if $a\cdot d<c\cdot b$ for $b,d>0$ \cite[pg. 10]{approaches}.\\ 
+Those interested can prove the validity of the ordering axioms for $\mathbb{Q}$ by applying the definition of $<_\mathbb{Z}$ on $ad,cb\in\mathbb{Z}$. Recall that for any $x,y\in\mathbb{Z}$, we say that $x<y$ if there exists $k\in\mathbb{N}\setminus\{0\}$ such that $x+k=y$ \cite[pg.11]{Luke-1A}.\\
+
+\noindent At this point, we have established that the rational numbers form an ordered field that satisfies all sorts of useful properties, so why don't we stop here? What makes us desire the so-called 
+``real numbers"? The problem is that the set of rational numbers has lots of ``gaps". That is, there are many values we simply cannot represent as the fraction of two integers. Examples include very useful and famous constants like $\pi$, $e$, $\sqrt{2}$, or the golden ratio $\phi$. Numbers like these which are absent from the set of rational numbers are called \textit{irrational}.\\\\
+Accordingly, our goal with constructing $\mathbb{R}$ is to create a set that contains $\mathbb{Q}$ and maintains all its useful properties but which also encompasses the irrational numbers. We essentially want to \textit{complete} the set of rational numbers and obtain the continuous real number line by filling these ``gaps". Therefore, the most pressing question is how to go about filling the ``holes" present in $\mathbb{Q}$.
+
+\section{Axiom of Completeness}
+ When we say that we'd like the real numbers to \textit{complete} $\mathbb{Q}$, this effectively just means that we want the real number line to have none of the ``gaps" caused by those elusive irrational numbers. Formally, we call this property $\textit{completeness}$ and as such, $\mathbb{R}$ is often referred to as the \textit{complete ordered field}. There are different ways to construct the real numbers and as a consequence, completeness is a property that comes in several flavours. That is, there are many definitions of completeness which are all logically equivalent \cite[pg. 1]{approaches}.\\\\
+The most common form is known as the \textit{least upper bound property}.\\
+
+\noindent $\mathbf{Definition\ 3.1}$ (Least Upper Bound)\cite[pg.20]{paper}. Given an ordered field $\mathbb{F}$ and a nonempty subset $A\subseteq\mathbb{F}$, $b\in\mathbb{F}$ is called an \textit{upper bound} of $A$ if for all $x\in A$, $x\leq b$.\\\\
+If $b_0\in\mathbb{F}$ is an upper bound of $A$ and for all other upper bounds $b$ of $A$, $b_0\leq b$, then $b_0$ is called the \textit{least upper bound} or \textit{supremum} of $A$ and is denoted sup($A$).\\
+
+\noindent $\mathbf{Definition\ 3.2}$ (Least Upper Bound Property)\cite[pg.21]{paper}. Given an ordered field $\mathbb{F}$, we say that $\mathbb{F}$ has the \textit{least upper bound property} if for any nonempty subset $A\subseteq\mathbb{F}$ where $A$ is bounded above, $A$ has a supremum in $\mathbb{F}$. That is, for any $A\subseteq\mathbb{F}$ which is bounded above such that $A\neq\varnothing$, sup$(A)\in\mathbb{F}$.\\
+
+\noindent If $\mathbb{F}$ has the least upper bound property, we say that $\mathbb{F}$ is \textit{complete}.\\
+
+ \noindent A standard approach to assuring completeness in $\mathbb{R}$ is simply to take the least upper bound property as an axiom. In this method, we define the real numbers as elements of a complete ordered field. It turns out that up to an isomorphism, $\mathbb{R}$ is the unique complete ordered field and hence, the real numbers are entirely characterized by this axiomatic definition \cite{unique}.\\
+ 
+ \noindent $\mathbf{Definition\ 3.3}$ (Axiomatic Definition of $\mathbb{R}$)\cite[pg.22 \& 24]{paper}. The \textit{real numbers} are a complete ordered field denoted by $\mathbb{R}$. That is, $(\mathbb{R}, +, \cdot, <)$ is an ordered field which also satisfies the \textit{completeness axiom}:\\\\
+(i) Given any nonempty subset $A\subseteq\mathbb{R}$, if $A$ is bounded above, then $sup(A)\in\mathbb{R}$.\\
+
+\noindent Note that we are referring to the standard notions of $(+,\cdot, <)$ over the real numbers taught in elementary school, and implicit in this definition is the idea that $\mathbb{Q}\subseteq\mathbb{R}$.\\\\ 
+\noindent Now that we have associated a formal meaning to the notion of completeness, let us develop the intuition towards how this axiom goes about filling the ``gaps" left by the irrational numbers in $\mathbb{Q}$. We can consider the following set used as an example in Jay Cummings's \textit{Real Analysis} \cite[pg.19-22]{paper}. 
+$$B:=\{x\in\mathbb{Q}\mid x^2<2\}$$
+Clearly, $B$ is nonempty and bounded above by infinitely many numbers such as $2, \frac{17}{2}, 100$, etc... Among all these upper bounds, the \textit{least upper bound} is the irrational number $\sqrt{2}$. As we know, $\sqrt{2}\not\in\mathbb{Q}$ but by the axiom of completeness, we must have $\sqrt{2}\in\mathbb{R}$. We can effectively repeat this process for any irrational number as the supremum of a non-empty set to conclude that it is an element of $\mathbb{R}$.\\
+
+\noindent Even though we have spent most of our mathematical lives assuming the existence of $\mathbb{R}$, an axiomatic definition does not prove this existence. The only way to do so is with the construction of an ordered field which we can show satisfies the completeness axiom. 
+
+\section{Rational Approximations}
+To gain an understanding of what our construction of $\mathbb{R}$ will attempt to accomplish, let us consider Euler's number $e$. The irrational number $e$ has an infinite decimal expansion and cannot be written as a fraction of two integers. Nonetheless, we often write rational approximations for $e$, such as $e=2.718281$... Formally, we are saying that Euler's number is a constant which up to 6 decimal places, equals this approximation. That is, $$|e-2.718281|<10^{-6}.$$ This does not give us an exact definition but if we want an even better approximation, say up to 10 decimal places, we can obtain one:
+$$e=2.7182818284...$$
+To build on the notion of better and better approximations, let us first present the following definition.\\
+
+\noindent $\mathbf{Definition\ 4.1}$ (Rational Sequences)\cite[pg.681]{calc}.
+        A \textit{sequence of rational numbers} is a function $\mathbb{N}\rightarrow\mathbb{Q}$, $n\mapsto a_n$ which assigns each natural number to a number in $\mathbb{Q}$. Generally, we write $(a_n)_{n=0}^\infty$, or if the context is clear, just $(a_n)$, to refer to the sequence $(a_0,a_1,a_2,...)$.\\
+
+\noindent For our purposes, a sequence should be thought of as nothing more than an infinite list of numbers. In the case of our definition over $\mathbb{Q}$, these lists consist of rational numbers.\\
+
+\noindent With this established, let us consider the following sequence of rational approximations for $e$:
+$$\left( 2,2.7,2.71,2.718,2.7182,2.71828,...\right)$$
+
+\noindent This sequence gives approximations for $e$ with accuracies of 1, 2, 3, 4 and so on decimal digits. Notice that as the index increases, the terms in the sequence represent values closer and closer to $e$. This type of sequence will be the motivation for our construction of $\mathbb{R}$, and we will define irrational numbers \textit{almost} as the limits of such sequences. However, we first notice that this example is far from the unique sequence of rational numbers which behaves in this manner. To see this, we can consider another sequence of approximations for Euler's number:
+$$\left( 2,0,3,\frac{8}{3},\frac{11}{4},\frac{19}{7},\frac{87}{32},\frac{106}{32},...\right).$$
+In this instance, the sequence actually gives a worse approximation in the second term than it does in the first but eventually starts to also yield values which are closer and closer to $e$. As such, we notice that a rational sequence can give increasingly better approximations for a number, regardless of its initial behaviour. This is an important observation; the accuracy of a sequence's eventual approximations is only dependent on the behaviour of its \textit{tail} and the values of any finite number of initial terms are irrelevant.
+\section{Cauchy Sequences and Intuition}
+We now have the intuition needed to understand that if we are to consider rational sequences of approximations for irrational numbers, we must only analyze their tails. A sequence's tail may have many different characteristics but there are a few distinct behaviours that will be of particular importance to our construction of $\mathbb{R}$.\\
+
+\noindent $\mathbf{Definition\ 5.1}$ (Convergent Sequence)\cite[pg.693-694]{calc}.
+        A rational sequence $(a_n)$ is said to \textit{converge} in $\mathbb{Q}$ if there exists some $k\in\mathbb{Q}$ such that for all $\epsilon >0$ $(\epsilon\in\mathbb{Q})$, there exists some $N\in\mathbb{N}$ where for all $m\geq N$, $|a_m-k|<\epsilon$. In this case, $k$ is called the sequence's \textit{limit}, which we denote by $a_n\rightarrow k$.\\
+
+ \noindent In this definition, $\epsilon$ can be interpreted as an error term. That is, no matter how small we choose $\epsilon$ to be, for a sequence to converge, all terms with an index greater than or equal to some $N\in\mathbb{N}$ must belong in the interval $(k-\epsilon, k+\epsilon)$. As such, we are effectively saying that every term in a convergent sequence's tail lies arbitrarily close to its limit $k$.\\\\
+ A basic example of a convergent sequence in $\mathbb{Q}$ is $(\frac{1}{n})_{n=1}^\infty=(1, \frac{1}{2}, \frac{1}{3}, \frac{1}{4},...)$. The interested reader can easily prove directly from the definition that this sequence's limit is $0$. As a hint, consider choosing $N\in\mathbb{N}$ such that $\frac{1}{N}<\epsilon$.\\\\
+ Non-examples of convergent sequences over $\mathbb{Q}$ include the rational approximations we previously discussed for $e$. Intuitively, this makes sense because $e$ is not an element of $\mathbb{Q}$. However, we notice that the sequences' terms are successively getting closer and closer to each other. For instance, in the sequence
+ $$(2,2.7,2.71,2.718,2.7182,2.71828,...),$$
+ the difference between any two consecutive terms keeps decreasing by a factor of about $10$. This turns out to be an example of a very important kind of tail behaviour.\\
+ 
+\noindent $\mathbf{Definition\ 5.2}$ (Cauchy sequences)\cite[pg.56]{new}.
+        Given a rational sequence $(a_n)$, we say $(a_n)$ is a \textit{Cauchy sequence} if for any rational number $\epsilon>0$, there exists some $N\in\mathbb{N}$ such that for all $n,m\geq N$, $|a_n-a_m|<\epsilon$.\\
+ 
+\noindent Essentially, a sequence is considered Cauchy if after a finite number of terms, the difference between any two terms tends to $0$. An important nuance in this definition is the fact that we require the difference between \textit{any} two terms after a certain point to be arbitrarily close, not just consecutive terms.\\\\
+We've now established two types of behaviours a sequence's tail can possess and one turns out to be stronger than the other.\\
+
+\noindent $\mathbf{Theorem\ 5.3}$ \cite[pg.58]{new}. \textit{If} $(a_n)$ \textit{is a convergent sequence, then it is also a Cauchy sequence}.\\    
+
+\noindent Let us consider the following proof, adapted from \textit{A Course in Calculus and Real Analysis}\\ \cite[p.58]{new}.
+
+	\begin{proof}
+Consider any sequence $(a_n)$, convergent in $\mathbb{Q}$. By definition, there exists some $k\in\mathbb{Q}$ such that $a_n\rightarrow k$. Given any $\epsilon>0$, we know $\frac{\epsilon}{2}>0$ and as such, there must exist some $N\in\mathbb{N}$ such that for all $m\geq N$, $|a_{m}-k|<\frac{\epsilon}{2}$. Thus, given any $n,n'\geq N$, we know $|a_n-k|<\frac{\epsilon}{2}$ and $|a_{n'}-k|<\frac{\epsilon}{2}$. We can then apply the triangle inequality in the following manner:
+$$|a_n-a_{n'}|=|(a_n-k)+(k-a_{n'})|\leq |a_n-k|+|k-a_{n'}|<\frac{\epsilon}{2}+\frac{\epsilon}{2}=\epsilon$$
+By definition, this shows $(a_n)$ is a Cauchy sequence. 
+	\end{proof}
+\noindent As we've seen with the approximating sequences for $e$, the converse is not true over the rational numbers. There are Cauchy sequences of successfully stronger rational approximations for any given irrational number but since they never converge in $\mathbb{Q}$, we cannot define irrational numbers as their limits. Thus, we will instead define real numbers (including irrationals) \textit{almost} as entire sequences of rational approximations. The reason we say \textit{almost} is because we saw with $e$ that many different sequences can approach the same number. \\\\
+\noindent To address this ambiguity, let us consider any two Cauchy sequences $(a_n)$ and $(b_n)$ whose tails both give stronger and stronger approximations for $e$. Neither sequence converges in $\mathbb{Q}$ but since they are Cauchy, the terms in each of their tails get arbitrarily close to each other and intuitively, we see that as a consequence, they are getting arbitrarily close to $e$. As such, something interesting happens if we define $(c_n):=(a_n-b_n)_{n=0}^\infty$. Since the tails of $(a_n)$ and $(b_n)$ exhibit the same behaviour, the tail of the sequence defined by their difference will tend to $0$ and hence, $c_n\rightarrow 0$.\\\\
+With this example, we see that if any two Cauchy sequences are tending towards the same number, the sequence defined by their difference will converge to $0$. We can use this property to categorize the set of all rational Cauchy sequences which approximate a particular value. From there, we will essentially define that value's real number counterpart as the entire set of such sequences.
+
+\section{Cauchy Sequence Construction of $\mathbb{R}$}
+ \noindent Let us denote the set of all rational Cauchy sequences by $\mathscr{C}_\mathbb{Q}$. We want to define a real number as a set of Cauchy sequences, all of which approach the same value. The natural way to execute this idea is of course, an equivalence relation.\\
+ 
+ \noindent $\mathbf{Definition\ 6.1}$ \cite[pg.506]{new}.
+        Given any $(x_n),(y_n)\in\mathscr{C}_\mathbb{Q}$, we define the equivalence relation $\sim$ on $\mathscr{C}_\mathbb{Q}$ by:
+        $$(x_n)\sim (y_n)\iff x_n-y_n\rightarrow 0.$$
+
+\noindent We are considering any two elements of $\mathscr{C}_\mathbb{Q}$ ``equivalent" if they have the same tail behaviour and hence, the sequence defined by their difference converges to $0$. As we've discussed, this is simply a necessary result of two sequences tending toward the same number. For our approach to make any sense, we must first show that $\sim$ is indeed an equivalence relation.
+ 	\begin{proof} Consider arbitrary sequences $(a_n),(b_n),(c_n)\in\mathscr{C}_\mathbb{Q}$.\\\\
+\underline{Reflexivity:} Given the sequence $(a_n)$, $a_m-a_m=0$ for all $m\in\mathbb{N}$ and as such,\\ $(a_n-a_n)=(0,0,0,0,...)$ clearly converges to $0$. Thus, by definition, $(a_n)\sim(a_n)$.\\\\
+\underline{Symmetry:} Assume that $(a_n)\sim (b_n)$ and hence, $a_n-b_n\rightarrow 0$. By definition of convergence, this means that for all $\epsilon>0$, there exists $N\in\mathbb{N}$ such that for all $m\geq N$, $|(a_{m}-b_{m})-0|<\epsilon$. We then notice that
+$$|(a_{m}-b_{m})-0|=|a_{m}-b_{m}|=|b_{m}-a_{m}|=|(b_{m}-a_{m})-0|.$$
+Hence, for all $\epsilon>0$, there exists $N\in\mathbb{N}$ such that for all $m\geq N$, $|(b_{m}-a_{m})-0|<\epsilon$ which implies by definition that $b_n-a_n\rightarrow 0$ and thus, $(b_n)\sim(a_n)$.\\\\
+\underline{Transitivity:} Utilizing ideas from the proof of the relation's transitivity in \cite[p.507]{new}, let us assume that $(a_n)\sim(b_n)$ and $(b_n)\sim (c_n)$. Given an arbitrary $\epsilon >0$, we can apply the same trick as in the proof of $\mathbf{Theorem\ 5.3}$, and use $\frac{\epsilon}{2}$ in each of the definitions for $a_n-b_n\rightarrow 0$ and $b_n-c_n\rightarrow 0$. That is, there exists $N_1,N_2\in\mathbb{N}$ such that for all $m\geq N_1$ and $k\geq N_2$, $|a_{m}-b_{m}-0|<\frac{\epsilon}{2}$ and $|b_{k}-c_{k}-0|<\frac{\epsilon}{2}$. Let $N=\text{max}\{N_1,N_2\}$ and then for any $n\geq N$, $n$ must be greater than or equal to both $N_1$ and $N_2$. As such, by the triangle inequality, it follows that 
+$$|a_n-c_n|=|(a_n-b_n)+(b_n-c_n)|\leq |(a_n-b_n)|+|(b_n-c_n)|<\frac{\epsilon}{2} + \frac{\epsilon}{2}=\epsilon.$$
+Therefore, by definition, $a_n-c_n\rightarrow 0$ and so, $(a_n)\sim (c_n)$.
+	\end{proof}
+\noindent Now that we have crafted a proper equivalence relation, we claim that the partition induced on $\mathscr{C}_\mathbb{Q}$ by $\sim$ is the set of real numbers and hence, we make the following definition.\\
+
+\noindent $\mathbf{Definition\ 6.2}$ \cite[pg.507]{new}.
+        We define the \textit{real numbers} as the set $\mathbb{R}:=\mathscr{C}_\mathbb{Q}\ /\sim$ and as such, each real number in $\mathbb{R}$ corresponds to an equivalence class in the quotient set $\mathscr{C}_\mathbb{Q}\ /\sim$.\\
+        
+\noindent From now on, when we denote $\mathbb{R}$, we will solely be referring to this definition.\\
+
+\noindent It can't be that easy, can it? Unfortunately, no. In mathematics, a claim without justification is about as useful as bringing an ice cube to the North Pole. Before we can even begin to presume that our crazy set
+$$\mathbb{R}=\mathscr{C}_\mathbb{Q}\ /\sim\ =\{[(a_n)]_\sim\in\mathcal{P}(\mathscr{C}_\mathbb{Q}) \mid (a_n)\in\mathscr{C}_\mathbb{Q}\}$$
+establishes the existence of the real numbers, we must show it satisfies the axiomatic definition of a complete ordered field.
+
+        \section{Recognizing our Construction as the Real Numbers}
+As a first step towards recognizing $\mathbb{R}$ as the real numbers, we equip the set with its operations.\\
+
+\noindent $\mathbf{Definition\ 7.1}$ \cite[pg.507]{new}.
+        Given any $x,y\in\mathbb{R}$, there are sequences $(a_n),(b_n)\in\mathscr{C}_\mathbb{Q}$ such that $x=[(a_n)]_\sim$ and $y=[(b_n)]_\sim$.\\\\ We define addition $(+)$ and multiplication $(\cdot)$ on $\mathbb{R}$ as follows.
+                \begin{enumerate}[(i)]
+            \item $x+y=[(a_n)]+[(b_n)]:=[(a_n+b_n)]$
+            \item $x\cdot y=[(a_n)]\cdot [(b_n)]:=[(a_n\cdot b_n)]$\\
+        \end{enumerate}
+
+ \noindent To be completely rigorous, we must show that these operations are \textit{well-defined}. Since their definitions rely on equivalence classes, it is imperative to check that changing representatives has no effect on the result of addition or multiplication. To do so, we will need to use the following lemma.\\\\
+ $\mathbf{Lemma\ 7.2}$ \cite[pg.506]{new}. Every Cauchy sequence of rational numbers is bounded.\\\\
+ This is a very intuitive result. We know that not every rational Cauchy sequence is necessarily convergent in $\mathbb{Q}$ but the terms in their tails still get arbitrarily close to each other. As a consequence, it follows that these terms cannot keep increasing to infinity or decreasing towards negative infinity.\\\\
+\noindent $\mathbf{Proposition\ 7.3}$ The operations $(+,\cdot)$ on $\mathbb{R}$ are well-defined.\\\\
+For the case of addition, we consider the following proof adapted from \cite[pg.507]{new}.
+	\begin{proof}
+Consider any $(a_n),(a'_n),(b_n),(b'_n)\in\mathscr{C}_\mathbb{Q}$ such that $[(a_n)]=[(a'_n)]$ and $[(b_n)]=[(b'_n)]$.\\\\
+$[(a_n)]=[(a'_n)]$ and $[(b_n)]=[(b'_n)]$ implies $(a_n)\sim (a'_n)$ and $(b_n)\sim (b'_n)$. By definition, this means that $a_n-a'_n\rightarrow 0$ and $b_n-b'_n\rightarrow 0$. We then consider the following equality: $$(a_n+b_n)-(a'_n+b'_n)=(a_n-a'_n)+(b_n-b'_n).\ \ \ \ \ \text{(1)}$$ Both $(a_n-a'_n)$ and $(b_n-b'_n)$ converge to $0$ and so, we can once again apply the $\frac{\epsilon}{2}$ trick in each of these definitions to conclude that the sequence defined by their sum $((a_n-a'_n)+(b_n-b'_n))$ also converges to $0$. By (1), this also tells us that $(a_n+b_n)-(a'_n+b'_n)\rightarrow 0$ and hence, $[(a_n+b_n)]=[(a'_n+b'_n)]$, as desired.
+	\end{proof}
+\noindent For the sake of brevity, we will omit the proof for multiplication but the interested reader can consult the same source.\\\\
+\noindent As a next step, let us recall that our entire motivation for constructing $\mathbb{R}$ was to create a completion of $\mathbb{Q}$. As it stands, it is quite difficult to see the rational numbers in our partition of $\mathscr{C}_\mathbb{Q}$. However, we need only notice that given any rational number $t\in\mathbb{Q}$, the constant sequence $(t_n)_{n=0}^\infty$ where $t_n=t$ for all $n\in\mathbb{N}$ is clearly a Cauchy sequence and hence, an element of $\mathscr{C}_\mathbb{Q}$.\\
+
+\noindent $\mathbf{Definition\ 7.4}$ \cite[pg.507]{new}.
+        Given any rational number $t\in\mathbb{Q}$, we define $t_\mathbb{R}$ as the equivalence class $[(t,t,t,t,...)]\in\mathscr{C}_\mathbb{Q}\ /\sim$.\\
+        
+\noindent As such, we can conceptualize $\mathbb{Q}\subseteq\mathbb{R}$ as the subset of $\mathscr{C}_\mathbb{Q}\ /\sim$ that consists of all equivalence classes with constant rational sequences as representatives. If the context is clear, it is common to refer to $t_\mathbb{R}=[(t,t,t,t,...)]$ simply by $t$. For instance, we will just write $0$ instead of $[(0,0,0,0,...)]$ or $1$ instead of $1_\mathbb{R}$.\\\\
+\noindent We have now seen that our set $\mathbb{R}$ has well-defined operations and can conceptualize its encapsulation of $\mathbb{Q}$. This puts us in a position to show $(\mathbb{R},+,\cdot)$ satisfies the field axioms.\\\\
+\noindent For instance, we can prove the existence of an additive identity in $\mathbb{R}$. Let us consider $0_\mathbb{R}=[(0,0,0,0,...)]$, which we claim satisfies the requirements for an additive identity element. To prove this, we must show that for all $a\in\mathbb{R}$, $a+0=a$.
+	\begin{proof}
+Given any $a\in\mathbb{R}$, we know $a=[(x_n)]=[(x_0,x_1,x_2,...)]$ for some $(x_n)\in\mathscr{C}_\mathbb{Q}$. Hence, by definition of addition on $\mathbb{R}$,
+$$a+0_\mathbb{R}=[(x_n)]+0_\mathbb{R}=[(x_0,x_1,x_2,...)]+[(0,0,0,...)]=[(x_0+0,x_1+0,x_2+0,...)]=[(x_0,x_1,x_2,...)].$$
+As such, it follows that $a+0_\mathbb{R}=[(x_n)]=a$ and so, $0_\mathbb{R}$ is a valid identity element, proving that $(\mathbb{R},+,\cdot)$ satisfies the first half of axiom (iv) in $\mathbf{Definition\ 2.1}$ for a field.
+	\end{proof}
+\noindent The difficulty in proving the various field axioms for our construction of $\mathbb{R}$ varies, and we will not go through said proofs in this paper but the reader may attempt to do so themselves and check their answers against \cite[pg.507-508]{new}. For our purposes, it suffices to quote our old friend Fermat and claim the margin is too small to contain our beautifully elegant proofs.\\\\
+At the beginning of our journey, we discussed that $\mathbb{Q}$ is a field possessing an order $<$ that respects its operations. We constructed $\mathbb{R}$ with the goal of showing it is also an ordered field and as such, we must define a similar order relation $<_\mathbb{R}$.\\
+
+\noindent $\mathbf{Definition\ 7.5}$ \cite[pg.20]{approaches}.
+        We define the relation $<_\mathbb{R}$ on $\mathscr{C}_\mathbb{Q}/\sim$ as follows:\\\\
+        For any $(a_n), (b_n)\in\mathscr{C}_\mathbb{Q}$, $[(a_n)]<_\mathbb{R}[(b_n)]\iff \text{there exists}\ \delta>0\ (\delta\in\mathbb{Q})\ \text{and}\ N\in\mathbb{N}$ such that for all $m \geq N$, $a_{m}+\delta < b_{m}$.\\
+        
+        \noindent Since $\delta>0$, this implies that for all $m\geq N$, $0<b_m-a_m$.\\
+
+\noindent The notational conventions we defined in the definition for $<_\mathbb{Q}$ hold for $<_\mathbb{R}$ as well, and as we do over the rationals, if the context is clear, we will generally denote $<_\mathbb{R}$ by $<$. The reader should also notice that $a_{m}+\delta <b_{m}$ applies the definition for $<_\mathbb{Q}$, since $a_{m}$ and $b_{m}$ are rational numbers.\\\\
+\noindent In keeping with our tendency to only analyze the tails of Cauchy sequences, we are effectively saying that a real number $b=[(b_n)]$ is greater than an another real number $a=[(a_n)]$ if after some finite index, all the terms in $(b_n)$ are greater than $(a_n)$. That is, $a<_\mathbb{R} b$ if the value approximated by the sequences in the equivalence class definition for $b$ is greater than the value approximated by the sequences in $[(a_n)]$.\\\\
+\noindent Once again, to be fully rigorous, we would have to show this definition is well-defined with respect to different representatives of the same equivalence classes. We will not do so here but intuitively, this should make sense. Our entire definition for $\mathscr{C}_\mathbb{Q}\ /\sim$ was based on the fact that every sequence in a specific equivalence class has the exact same tail behaviour and $<_\mathbb{R}$ is defined solely with respect to sequences' tails.\\\\
+We can now check that $(\mathbb{R},+,\cdot,<_\mathbb{R})$ satisfies the order axioms laid out in $\mathbf{Definition\ 2.2}$.\\\\
+\noindent For instance, axiom 2 (transitivity) follows directly from the properties of $\mathbb{Q}$ as an ordered field.
+
+	\begin{proof} Given any $a=[(a_n)],b=[(b_n)],c=[(c_n)]\in\mathbb{R}$, assume that $a<_\mathbb{R}b$ and $b<_\mathbb{R}c$. By definition of $<_\mathbb{R}$, there exists $\delta_1,\delta_2>0$ and $N_1,N_2\in\mathbb{N}$ such that for all $m\geq N_1$ and $m'\geq N_2$, $a_{m}+\delta_1<b_{m}$ and $b_{m'}+\delta_2<c_{m'}$.\\\\
+ Take $N=\text{max}\{N_1,N_2\}$ and then it follows that for all $n_0\geq N$, $n_0$ is greater than or equal to $N_1$ and $N_2$. Hence, $a_{n_0}+\delta_1<b_{n_0}$ and $b_{n_0}+\delta_2<c_{n_0}$. By the transitivity of $<_\mathbb{Q}$, $a_{n_0} +\delta_1 <b_{n_0}$, $b_{n_0}<b_{n_0}+\delta_2$, and $b_{n_0}+\delta_2<c_{n_0}$ implies that $a_{n_0}+\delta_1< c_{n_0}$. Therefore, $N\in\mathbb{N}$ such that for all $n_0\geq N$, $a_{n_0}+\delta_1<c_{n_0}$ and thus, by definition of $<_\mathbb{R}$, $a<_\mathbb{R}c$.
+	\end{proof}
+ 
+ \noindent The proofs for the remaining axioms are left as an exercise and answers can be checked against \cite[pg.20-21]{approaches}. We can now successfully conclude that our construction satisfies the requirements for an ordered field. As such, we may now define all concepts related to ordered fields on $\mathbb{R}$ (absolute value, sequences, Cauchy and convergent sequences over $\mathbb{R}$, etc...).\\\\
+ There is now only one property left to address and it happens to be the distinguishing characteristic of the real numbers, completeness. All ideas, propositions, theorems, and proofs we will utilize to show our construction of $\mathbb{R}$ is complete are adapted from \textit{Appendix A} of \textit{A Course in Calculus and Real Analysis} \cite[p.505-512]{new}. Before we can confidently prove that our construction of $\mathbb{R}$ satisfies the least upper bound property, we will assume many intermediate results.\\
+ 
+\noindent $\mathbf{Proposition\ 7.6}$ $\mathbb{R}$ is an Archimedean field. That is, for any $x\in\mathbb{R}$, there exists a natural number $n\in\mathbb{N}$ such that $n>x$.\\
+
+\noindent $\mathbf{Proposition\ 7.7}$ Given any $a,b\in\mathbb{R}$ such that $a<b$, there exists $r\in\mathbb{Q}$ such that $a<r<b$.\\
+
+\noindent $\mathbf{Proposition\  7.8}$ Given any $[(r_n)]=a\in\mathbb{R}$, if there exists $N\in\mathbb{N}$ such that for all $m\geq N$, $r_m\geq 0$, then $a\geq 0$. More generally, if there exists $b,c\in\mathbb{R}$ and $N\in\mathbb{N}$ such that  $c\leq r_m\leq b$ for all $m\geq N$, then $c\leq a\leq b$.\\
+
+\noindent Even without complete proofs, these results aren't hard to understand. The \textit{Archimedian property} effectively confirms our belief that there is no infinitely large real number, and $\mathbf{Proposition\ 7.7}$ is a well-known result we often learn as early as elementary school. The last proposition simply tells us some properties of $\leq$ over $\mathbb{R}$ which follow from the definition of $<_\mathbb{R}$. With those ideas established, we can now present our most important theorem.\\
+
+\noindent $\mathbf{Theorem\ 7.9}\ (\mathbb{R},+,\cdot,<_\mathbb{R})$ \textit{has the least upper bound property, and hence, $\mathbb{R}=\mathscr{C}_\mathbb{Q}/\sim$\\ is complete}.\\
+
+\noindent To give a rigorous basis to this claim, we present our most complicated proof to date. We break down every step to its core so that the reader may follow the logic at their own pace.
+\begin{proof} Consider any nonempty subset $A\subseteq\mathbb{R}$ that is bounded above and nonempty. Since $A\neq\varnothing$, there is some $a_0\in A$ and since $A$ is bounded above, there is some $b_0\in\mathbb{R}$ such that $a\leq b_0$ for all $a\in A$.\\\\
+We then define $c_1:=\frac{a_0+b_0}{2}$ and there are two possible cases.
+        \begin{enumerate}[(i)]
+            \item If $c_1$ is an upper bound of $A$, we let $a_1:=a_0$ and $b_1:=c_1$.
+            \item On the other hand, if $c_1$ is not an upper bound of $A$, then there exists some $d\in A$ such that $c_1<d$ and in this case, we instead define $a_1:=d$ and $b_1:=b_0$.
+        \end{enumerate}
+In either case, we can conclude that $a_0\leq a_1$, $b_0\geq b_1$, and furthermore,
+$$a_1\in A,\ b_1\ \text{is an upper bound of}\ A,\ \text{and}\ 0\leq b_1-a_1\leq\frac{b_0-a_0}{2}.$$\\
+We then repeat the same process to define $a_2$ and $b_2$ but by using $a_1$ and $b_1$ in place of $a_0$ and $b_0$ respectively. In fact, we will use this method as an inductive procedure to produce sequences of real numbers, $(a_n)_{n=0}^\infty$ and $(b_n)_{n=0}^\infty$.\\\\
+In general, given any $n\in\mathbb{N}\setminus\{0\}$, we note the following. By construction, for any $0\leq i\leq n-1$, we know $a_i\in A$ and $b_i$ is an upper bound of $A$ such that $a_0\leq a_1\leq ...\leq a_{n-1}$ and $b_0\geq b_1\geq ...\geq b_{n-1}$. As a consequence, we will have: $$0\leq (b_i-a_i)\leq\frac{(b_{i-1}-a_{i-1})}{2}\leq\frac{(b_{i-2}-a_{i-2})}{4}\leq...\leq\frac{(b_{1}-a_{1})}{2^{i-1}} \leq\frac{(b_{0}-a_{0})}{2^i}.$$
+
+\noindent For our $n$th term, we then choose $a_n\in A$ and an upper bound $b_n$ of $A$ as follows. Let $c_n:=\frac{(a_{n-1}+b_{n-1})}{2}$ and there are two possible cases.
+        \begin{enumerate}[(i)]
+            \item If $c_n$ is an upper bound of $A$, we let $a_n:=a_n-1$ and $b_n:=c_n$.
+            \item On the other hand, if $c_n$ is not an upper bound of $A$, then there exists some $d\in A$ such that $c_n<d$ and in this case, we instead define $a_n:=d$ and $b_n:=b_{n-1}$.
+        \end{enumerate}
+In either case, we can conclude that $a_{n-1}\leq a_n$, $b_{n-1}\geq b_n$, and furthermore,
+$$a_n\in A,\ b_n\ \text{is an upper bound of}\ A,\ \text{and}\ 0\leq b_n-a_n\leq\frac{b_0-a_0}{2^n}.$$
+From this procedure, we can confidently conclude that for all $n\in\mathbb{N}$, $a_n\leq b_n$. Hence, if for any $m\in\mathbb{N}$, $a_m=b_m$, then $a_m$ is an upper bound of $A$ that is also an element of $A$ and so clearly, $a_m$ is the supremum of $A$. We must now only show that $A$ has a supremum when $a_m<b_m$ for all $m\in\mathbb{N}$. Thus, we now assume that $a_n<b_n$ for all $n\in\mathbb{N}$.\\\\
+ By $\mathbf{Proposition\ 7.7}$, for each $n\in\mathbb{N}$, there exists $r_n\in\mathbb{Q}$ such that $a_n<r_n<b_n$ and we claim that $(r_n)_{n=0}^\infty$ is a Cauchy sequence. Let us show this from the definition by considering an arbitrary $\epsilon\in\mathbb{Q}^+$. We define $\alpha:=\frac{(b_0-a_0)}{\epsilon}$ and applying the Archimedean property from $\mathbf{Proposition\ 7.6}$ to $\alpha$, there exists $k\in\mathbb{N}$ such that $\alpha<k$, which gives us the following string of implications:
+ $$\alpha<k\iff\frac{(b_0-a_0)}{\epsilon}<k\iff \frac{(b_0-a_0)}{k}<\epsilon \Rightarrow \frac{(b_0-a_0)}{2^k}<\epsilon$$
+
+\noindent The last inequality follows from the fact that $2^k\geq k$ for all $k\in\mathbb{N}$. We now consider any $n,m\in\mathbb{N}$ such that $m\geq n\geq k$. We know from our previous work that $a_m<r_m<b_m$, $a_n<r_n<b_n$, $a_m\geq a_n$, and $b_m\leq b_n$. Given these inequalities, we can derive the following results:
+$$r_n-r_m<b_n-r_m<b_n-a_m\leq b_n-a_n$$
+$$\text{and,}\ r_n-r_m>a_n-r_m>a_n-b_m\geq a_n-b_n.$$
+As such, it follows that
+$$|r_n-r_m|<b_n-a_n\leq \frac{b_0-a_0}{2^n}\leq \frac{b_0-a_0}{2^k}<\epsilon$$
+We have now shown that for all $m,n\geq k$, $|r_n-r_m|<\epsilon$ and thus, by definition, $(r_n)_{n=0}^\infty\in\mathscr{C}_\mathbb{Q}$. We will now define $r:=[(r_n)]\in\mathbb{R}$ and attempt to show $r$ is the supremum of $A$. As a first step, we notice that for all fixed $m\in\mathbb{N}$ and for all $n\in\mathbb{N}$ such that $n\geq m$, we know $a_m\leq a_n<r_n<b_n\leq b_m$. It then follows by $\mathbf{Proposition\ 7.8}$ that $a_m\leq r\leq b_m$.\\
+As a contradiction, let us first assume that $r$ is not even an upper bound of $A$. Then, there must be some $a\in A$ such that $a>r$. Then by $\mathbf{Proposition\ 7.7}$, there must be some $\delta\in\mathbb{Q}^+$ such that $\delta<a-r$. Moreover, by $\mathbf{Proposition\ 7.6}$, there is some $s\in\mathbb{N}$ such that $s>\frac{(b_0-a_0)}{\delta}$ and hence,
+$$0\leq b_s-a_s\leq \frac{b_0-a_0}{2^s}\leq\frac{b_0-a_0}{s}<\delta$$
+This tells us that $b_s\leq a_s+\delta\leq r+\delta < a$ but this contradicts the fact that $b_s$ is an upper bound of $A$! Hence, we must have that $r$ is an upper bound of $A$.\\
+
+\noindent Next, we will assume as another contradiction that $r$ is not the least upper bound of $A$. Then, there is some $\gamma\in\mathbb{R}$ such that $\gamma$ is an upper bound for $A$ and $\gamma< r$. Using the same procedure as in our last contradiction, we again take some $\delta\in\mathbb{Q}$ such that $0<\delta<r-\gamma$ by $\mathbf{Proposition\ 7.7}$ and $s\in\mathbb{N}$ such that $0\leq b_s-a_s<\delta$. This time, the result is that $a_s>b_s-\delta\geq r-\delta>\gamma$. However, since $a_s\in A$, this contradicts the fact $\gamma$ is an upper bound for $A$. Therefore, it follows that $r$ is the supremum of $A$.\\
+
+\noindent At last, all this work allows us to deduce that $A$ always has a supremum in $\mathbb{R}$ and since $A$ was arbitrary, we conclude that $\mathbb{R}$ satisfies the least upper bound property.
+\end{proof}
+\noindent With this theorem in hand, we reach our long-awaited objective. We finally conclude that our construction of $\mathbb{R}:=\mathscr{C}_\mathbb{Q}\ /\sim$ satisfies the axiomatic definition for a complete ordered field and hence, proves the existence of the real numbers.
+
+\newpage
+\nocite{*}
+\printbibliography
+\end{document}
