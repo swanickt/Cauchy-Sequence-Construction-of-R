@@ -1,6 +1,6 @@
 # Cauchy Sequence Construction of the Real Numbers
 
-\*\*\* See the PDF file for the paper itself. Depending on your browser, you may have to download it before viewing. You can also find
+\*\*\* **See the PDF file for the paper itself.** Depending on your browser, you may have to download it before viewing. You can also find
 the PDF in my Linkedin account, under projects: https://www.linkedin.com/in/thomas-swanick/details/projects/ ***
 
 The following paper delivers a step-by-step outline of the Cauchy sequence construction of
